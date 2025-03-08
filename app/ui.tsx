@@ -10,7 +10,7 @@ export default function UI() {
   const [searchInput, setSearchInput] = useState("");
 
   const todosQuery = useQuery({
-    queryKey: ["todos"],
+    queryKey: ["todos", searchInput],
     queryFn: () => getTodos({ searchInput }),
   });
 
