@@ -63,6 +63,11 @@ export default function Todo({ todo }) {
           className="flex-1 border-b-black border-b pb-1"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          onKeyDown={async (e) => {
+            if (e.key === "Enter") {
+              await updateTodoMutation.mutate();
+            }
+          }}
         />
       ) : (
         <div className="flex-1 flex items-center gap-4">
