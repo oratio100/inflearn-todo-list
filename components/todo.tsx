@@ -18,18 +18,25 @@ export default function Todo({ todo }) {
     : null;
 
   const updateTodoMutation = useMutation({
-    mutationFn: () =>
-      updateTodo({
+    mutationFn: async () => {
+      if (title.trim() === "") {
+        alert("제목을 입력해주세요!");
+        return;
+      }
+      await updateTodo({
         id: todo.id,
         title,
         completed,
         completed_at: completed ? new Date().toISOString() : null,
-      }),
-    onSuccess: () => {
-      setIsEditing(false);
-      queryClient.invalidateQueries({
-        queryKey: ["todos"],
       });
+    },
+    onSuccess: () => {
+      if (title.trim() !== "") {
+        setIsEditing(false);
+        queryClient.invalidateQueries({
+          queryKey: ["todos"],
+        });
+      }
     },
   });
 
