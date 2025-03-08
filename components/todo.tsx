@@ -5,11 +5,17 @@ import { deleteTodo, updateTodo } from "actions/todo-actions";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { queryClient } from "config/ReactQueryClientProvider";
+import formatDate from "utils/formatDate";
 
 export default function Todo({ todo }) {
   const [isEditing, setIsEditing] = useState(false);
   const [completed, setCompleted] = useState(todo.completed);
   const [title, setTitle] = useState(todo.title);
+
+  const createdTime = formatDate(todo.created_at);
+  const completedTime = todo.completed_at
+    ? formatDate(todo.completed_at)
+    : null;
 
   const updateTodoMutation = useMutation({
     mutationFn: () =>
@@ -17,6 +23,7 @@ export default function Todo({ todo }) {
         id: todo.id,
         title,
         completed,
+        completed_at: completed ? new Date().toISOString() : null,
       }),
     onSuccess: () => {
       setIsEditing(false);
@@ -51,7 +58,19 @@ export default function Todo({ todo }) {
           onChange={(e) => setTitle(e.target.value)}
         />
       ) : (
-        <p className={`flex-1 ${completed && "line-through"}`}>{title}</p>
+        <div className="flex-1 flex items-center gap-4">
+          <p className={`${completed && "line-through"}`}>{title}</p>
+          <div className="flex flex-col">
+            <p className="text-gray-600 font-thin text-xs">
+              생성: {createdTime}
+            </p>
+            {completedTime && (
+              <p className="text-gray-600 font-thin text-xs">
+                완료: {completedTime}
+              </p>
+            )}
+          </div>
+        </div>
       )}
 
       {isEditing ? (
